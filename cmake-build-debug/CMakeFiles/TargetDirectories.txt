@@ -1,0 +1,4 @@
+/cygdrive/c/Users/imnof/OneDrive/Uni/2019/Trimester 2/NWEN243/Lab1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/cygdrive/c/Users/imnof/OneDrive/Uni/2019/Trimester 2/NWEN243/Lab1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/cygdrive/c/Users/imnof/OneDrive/Uni/2019/Trimester 2/NWEN243/Lab1/cmake-build-debug/CMakeFiles/encode.dir
+/cygdrive/c/Users/imnof/OneDrive/Uni/2019/Trimester 2/NWEN243/Lab1/cmake-build-debug/CMakeFiles/decode.dir

@@ -1,0 +1,1 @@
+/usr/bin/cc -g  -Wl,--enable-auto-import CMakeFiles/decode.dir/decode.c.o  -o decode.exe -Wl,--out-implib,libdecode.dll.a -Wl,--major-image-version,0,--minor-image-version,0 
