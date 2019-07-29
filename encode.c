@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -23,9 +24,8 @@
 
  */
 
-typedef enum { false, true } bool;
-
 char* alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+bool used[26];
 
 char upcase(char ch){
   if(islower(ch))
@@ -47,13 +47,11 @@ char* fixkey(char* s){
 }
 
 
-bool containsChar(char c, char arr[26]) {
-    for (int i = 0; i < 26; i++) {
-        if (arr[i] == c) {
-            return true;
-        }
+char nextChar(char next) {
+    while (used[next-'A']) {
+        next = (next+1-'A')%26+'A';
     }
-    return false;
+    return next;
 }
 
 void buildtable (char* key, char* encode){
@@ -67,49 +65,53 @@ void buildtable (char* key, char* encode){
   // You are implementing a Caesar 1 & 2 combo Cypher as given in handout.
   // Your code here:
 
-  char used[26];
-  int freePos = 0;
+  // Mark characters as used
 
-  fixkey(key); // fix the key, i.e., uppercase and remove whitespace and punctuation
-  int keylength = strlen(key);
 
-  // Map key at key pos first
-  int skipped = 0;
-  char lastChar;
-  for (int i = keylength; i < keylength; i++) {
-      if(!containsChar(key[i-keylength], used)) {
-          lastChar = key[i-keylength];
-          encode[i - skipped] = lastChar;
-          used[freePos] = lastChar;
-          freePos++;
-      }
-      skipped = skipped + 1;
-  }
+    int offset = strlen(key);
+    fixkey(key);
 
-  int alphapos = strchr(alpha, lastChar) + 1;
+    int keyLength = strlen(key);
+    int keyPos = 0;
 
-  // Finish section after key
-  for (int i = keylength + keylength - skipped; i < 26; i++) {
-      if (alphapos >= 26) {
-          alphapos = alphapos - 26;
-      }
-      encode[i] = alpha[alphapos];
-      alphapos = alphapos + 1;
-  }
+    int i = offset - 1; // start at offset pos
+    char next;
 
-  // Finish section pre key
-  for (int i = 0; i < keylength; i++) {
-      if (alphapos >= 26) {
-          alphapos = alphapos - 26;
-      }
-      encode[i] = alpha[alphapos];
-      alphapos = alphapos + 1;
-  }
+    // key
+    while (keyPos < keyLength) {
+        // skip used chars
+        while(used[key[keyPos]-'A']) {
+            keyPos++;
+        }
+
+        next = key[keyPos];
+        used[next - 'A'] = true;
+        encode[i] = next;
+        i++;
+    }
+
+    i = i - 1;
+
+    // find next character to use after key
+    next = encode[i-1];
+
+    // fill after key
+    for (; i < 26; i++) {
+        next = nextChar(next);
+        encode[i] = next;
+        used[next-'A'] = true;
+    }
+
+    // fill before key
+    for (i = 0; i < offset-1; i++) {
+        next = nextChar(next);
+        encode[i] = next;
+        used[next-'A'] = true;
+    }
 }
 
 
 int main(int argc, char **argv){
-    freopen("C:\\Users\\imnof\\OneDrive\\Uni\\2019\\Trimester 2\\NWEN243\\Lab1\\alpha.txt","r",stdin);
   // format will be: 'program' key {encode|decode}
   // We'll be using stdin and stdout for files to encode and decode.
 
@@ -144,4 +146,3 @@ int main(int argc, char **argv){
     ch = fgetc(stdin);      // get next char from stdin
   }
 }
-  

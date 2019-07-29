@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 /* Program developed for NWEN243, Victoria University of Wellington
    Author: Kris Bubendorfer (c) 2014-15.
@@ -11,6 +12,9 @@
 
    See encode for  examples on using it
  */
+
+char* alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+bool used[26];
 
 char upcase(char ch){
   if(islower(ch))
@@ -40,7 +44,14 @@ int in(char c, char* s, int pos){
     if(c == s[i]) return 1;
     
   return 0;
-} 
+}
+
+char nextChar(char next) {
+    while (used[next-'A']) {
+        next = (next+1-'A')%26+'A';
+    }
+    return next;
+}
 
 
 void buildtable (char* key, char* decode){ // this changed from encode
@@ -52,14 +63,63 @@ void buildtable (char* key, char* decode){ // this changed from encode
   // Your code here:
 
   // probably need to declare some stuff here!
-  
-  fixkey(key); // fix the key, i.e., uppercase and remove whitespace and punctuation
 
   // the simplest way to do this is to do exactly the same as you did when creating the 
   // encode table, and then look up the encode table to get the translations, and build the
   // decode table from this.  This isn't the most efficient approach, but it will get the 
   // job done unless you want to be fancy.
 
+    char* encode = (char*)malloc(sizeof(char)*26);
+
+    int offset = strlen(key);
+    fixkey(key);
+
+    int keyLength = strlen(key);
+    int keyPos = 0;
+
+    int i = offset - 1; // start at offset pos
+    char next;
+
+    // key
+    while (keyPos < keyLength) {
+        // skip used chars
+        while(used[key[keyPos]-'A']) {
+            keyPos++;
+        }
+
+        next = key[keyPos];
+        used[next - 'A'] = true;
+        encode[i] = next;
+        i++;
+    }
+
+    i = i - 1;
+
+    // find next character to use after key
+    next = encode[i-1];
+
+    // fill after key
+    for (; i < 26; i++) {
+        next = nextChar(next);
+        encode[i] = next;
+        used[next-'A'] = true;
+    }
+
+    // fill before key
+    for (i = 0; i < offset-1; i++) {
+        next = nextChar(next);
+        encode[i] = next;
+        used[next-'A'] = true;
+    }
+
+    // decode
+    for (int i = 0; i < 26; i++) {
+        for (int j = 0; j < 26; j++) {
+            if (alpha[i] == encode[j]) {
+                decode[i] = alpha[j];
+            }
+        }
+    }
 
 }
 
