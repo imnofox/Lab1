@@ -43,6 +43,25 @@ char upcase(char ch){
   return ch;
 }
 
+int* frequencyAnalysis(char* text) {
+  static int freq[ALEN];
+  
+  // set counts to zero
+  for (int i = 0; i < ALEN; i++) {
+      freq[i] = 0;
+  }
+  
+  for (int i = 0; i < strlen(text); i++) {
+   freq[toupper(text[i]) - 'A']++; 
+  }
+  
+  for (int i =0; i < ALEN; i++) {
+      printf("%c %d\n", ALPHABET[i], freq[i]);
+  }
+  
+  return freq;
+}
+
 int main(int argc, char **argv){
 
   // first allocate some space for our input text (we will read from stdin).
@@ -85,52 +104,9 @@ int main(int argc, char **argv){
    *
    */
   
-  // Your code here...
-
-  char subciphertexts[n][TEXT_SIZE];
-  for (int i = 0; i < n; ++i) {
-      for (int j =0; j < TEXT_SIZE; ++j) {
-          subciphertexts[i][j] = ' ';
-      }
-  }
-
-
-  for (int i = 1; i <= n; ++i) {
-      // split
-      for (int j = 0; j < i; ++j) {
-          for (int k = 0; k < TEXT_SIZE; ++k) {
-              if (j + i * k > TEXT_SIZE) break;
-              subciphertexts[j][k] = text[j + i * k];
-          }
-      }
-
-      // subtext lenths
-      int sublength = 0;
-      for (int j = 0; j < i; ++j) {
-          for (int k = 0; k < TEXT_SIZE; ++k) {
-              if (subciphertexts[j][k] == ' ') break;
-              sublength++;
-          }
-      }
-
-      // init freq table
-      int frequencies[26];
-      for (int i=0; i < 26; i++) {
-          frequencies[i] = 0;
-      }
-
-      for (int i=0; i < 26; i++) {
-          for (int j=0; j < sublength; j++) {
-              if (isalpha(subciphertexts[i][j])) {
-                  frequencies[subciphertexts[i][j] - 65] += 1;
-              }
-          }
-      }
-
-      char freq[] = CHFREQ;
-
-  }
-
-
+  // Your code here... 
+      frequencyAnalysis(text);
 
 }
+
+
